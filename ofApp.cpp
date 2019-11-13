@@ -1,6 +1,7 @@
 #include "ofApp.h"
 #include <iostream>
 #include <vector>
+#include <typeinfo>
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -11,16 +12,32 @@ void ofApp::setup(){
 	vector < string > linesOfTheFile;
 	ofBuffer buffer = ofBufferFromFile("tinyG.txt");
 	for (auto line : buffer.getLines()) {
-		std::cout << line.c_str() << std::endl;
 		linesOfTheFile.push_back(line);
 	}
 
-	if (linesOfTheFile.size() != 0)
-		std::cout << linesOfTheFile[0];
-	else
-		std::cout << "empty";
-	ofFile fileToRead(ofToDataPath("tinyG.txt"));
-	if (doesFile)
+	int V = atoi(linesOfTheFile[0].c_str());
+	int E = atoi(linesOfTheFile[1].c_str());
+	graph.setup(V, E);
+
+	int v1, v2;
+
+	G.resize(V);
+
+	for (int i = 2; i < linesOfTheFile.size(); i++) {
+		std::cout << linesOfTheFile[i] << std::endl;
+		v1 = atoi(linesOfTheFile[i].c_str());
+		v2 = int(linesOfTheFile[i][2]) - 48;
+		G[v1].push_back(v2);
+	}
+
+	for (int i = 0; i < G.size(); i++) {
+		std::cout << i << " ";
+		for (int j = 0; j < G[i].size(); j++) {
+			std::cout << G[i][j] << " ";
+		}
+		std::cout << std::endl;
+	}	
+
 }
 
 //--------------------------------------------------------------

@@ -7,6 +7,8 @@
 class ofApp : public ofBaseApp{
 
 	vertice vertice;
+	graph graph;
+	vector<vector<int>> G;
 
 	public:
 		void setup();
