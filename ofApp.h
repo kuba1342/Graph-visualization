@@ -6,9 +6,11 @@
 
 class ofApp : public ofBaseApp{
 
-	vertice vertice;
+	//vertice vertice;
 	graph graph;
 	vector<vector<int>> G;
+	vector<vector<int>> G2;
+	vector<vertice> vertices;
 
 	public:
 		void setup();

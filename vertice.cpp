@@ -24,6 +24,14 @@ void vertice::draw() {
 	ofDrawBitmapString(_id, _x - 3, _y + 3);
 }
 
+int vertice::getX(){
+	return _x;
+}
+
+int vertice::getY() {
+	return _y;
+}
+
 vertice::~vertice()
 {
 }

@@ -18,6 +18,10 @@ public:
 
 	void draw();
 
+	int getX();
+
+	int getY();
+
 	~vertice();
 };
 
