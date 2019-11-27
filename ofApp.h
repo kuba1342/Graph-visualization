@@ -3,14 +3,27 @@
 #include "ofMain.h"
 #include "vertice.h"
 #include "graph.h"
+#include <time.h>
 
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp {
 
-	//vertice vertice;
 	graph graph;
 	vector<vector<int>> G;
 	vector<vector<int>> G2;
 	vector<vertice> vertices;
+	vector<int> visitedToDraw;
+	vector<int> pathToDraw;
+
+	int vertice;
+	int start;
+	int destination;
+	float nextEventSeconds = 0;
+
+	bool executing = false;
+	bool startSelected = false;
+	bool destinationSelected = false;
+
+	ofColor red = (255, 0, 0);
 
 	public:
 		void setup();
@@ -29,4 +42,5 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 		
+		void delay(int number_of_seconds);
 };

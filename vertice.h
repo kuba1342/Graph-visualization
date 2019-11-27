@@ -8,6 +8,7 @@ class vertice {
 	std::string _id;
 	double _x;
 	double _y;
+	ofColor _color;
 
 public:
 	vertice();
@@ -18,9 +19,15 @@ public:
 
 	void draw();
 
+	void drawBFS();
+
+	void setColor(ofColor color);
+
 	int getX();
 
 	int getY();
+
+	std::string getId();
 
 	~vertice();
 };

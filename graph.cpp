@@ -21,6 +21,7 @@ void graph::BFS(int s, std::vector<std::vector<int>> G, std::vector<int> visited
 	q.push(s);
 	visited[s] = true;
 
+	
 	while (!q.empty()) {
 		int f = q.front();
 		std::cout << f << " ";
@@ -35,7 +36,7 @@ void graph::BFS(int s, std::vector<std::vector<int>> G, std::vector<int> visited
 	}
 }
 
-bool graph::BFS2(std::vector<std::vector<int>> G, int s, int dest, int v, int pred[], int dist[]) {
+bool graph::BFS2(std::vector<std::vector<int>> G, int s, int dest, int v, int pred[], int dist[], std::vector<int> &visitedToDraw) {
 	std::list<int> queue;
 	bool* visited = new bool[v];
 
@@ -51,6 +52,8 @@ bool graph::BFS2(std::vector<std::vector<int>> G, int s, int dest, int v, int pr
 
 	while (!queue.empty()) {
 		int f = queue.front();
+		//std::cout << f << " ";
+		visitedToDraw.push_back(f);
 		queue.pop_front();
 		for (int i = 0; i < G[f].size(); i++) {
 			if (visited[G[f][i]] == false) {
@@ -66,11 +69,11 @@ bool graph::BFS2(std::vector<std::vector<int>> G, int s, int dest, int v, int pr
 	}
 }
 
-void graph::BFSPath(std::vector<std::vector<int>> G, int s, int dest, int v) {
+void graph::BFSPath(std::vector<std::vector<int>> G, int s, int dest, int v, std::vector<int> &visitedToDraw, std::vector<int> &pathToDraw) {
 	int* pred = new int[v];
 	int* dist = new int[v];
 
-	BFS2(G, s, dest, v, pred, dist);
+	BFS2(G, s, dest, v, pred, dist, visitedToDraw);
 
 	std::vector<int> path;
 	int crawl = dest;
@@ -84,8 +87,10 @@ void graph::BFSPath(std::vector<std::vector<int>> G, int s, int dest, int v) {
 	std::cout << "Shortest path length - " << dist[dest] << std::endl;
 	std::cout << "Path: ";
 
-	for (int i = path.size() - 1; i >= 0; i--)
+	for (int i = path.size() - 1; i >= 0; i--) {
 		std::cout << path[i] << " ";
+		pathToDraw.push_back(path[i]);
+	}
 }
 
 

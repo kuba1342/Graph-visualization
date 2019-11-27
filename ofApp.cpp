@@ -6,8 +6,9 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-	ofSetFrameRate(60);
-	//vertice.setup("1", 500, 500);
+	//ofSetFrameRate(60);
+
+	vertice = 0;
 
 	// Reading file
 	vector < string > linesOfTheFile;
@@ -50,10 +51,7 @@ void ofApp::setup(){
 		for (int j = 0; j < G[i].size(); j++) {
 			//std::cout << G[i][j] << " ";
 		}
-		//std::cout << std::endl;
 	}	
-
-	std::vector<int> visitedToDraw;
 
 	G2.assign(12, std::vector<int>());
 
@@ -74,24 +72,41 @@ void ofApp::setup(){
 
 	//graph.BFS(2, G2, visitedToDraw);
 
-	graph.BFSPath(G2, 0, 8, 9);
+	//graph.BFSPath(G2, 0, 8, 9, visitedToDraw, pathToDraw);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+	float now = ofGetElapsedTimef();
+	if (now > nextEventSeconds) {
+		if (executing) {
+			vertices[visitedToDraw[vertice]].setColor(ofColor(255, 0, 0));
 
+			if (vertice < visitedToDraw.size() - 1) {
+				vertice++;
+			}
+			else {
+				executing = false;
+				// PRZESUN¥Æ POZA!!!!
+				for (int i = 0; i < pathToDraw.size(); i++) {
+					vertices[pathToDraw[i]].setColor(ofColor(0, 255, 0));
+				}
+				visitedToDraw.clear();
+				pathToDraw.clear();
+			}
+		}
+		nextEventSeconds = now + 3;
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	//vertice.draw();
 	for (int i = 0; i < vertices.size(); i++) {
 		for (int j = 0; j < G[i].size(); j++) {
 			ofDrawLine(vertices[i].getX(), vertices[i].getY(), vertices[G[i][j]].getX(), vertices[G[i][j]].getY());
 		}
 		vertices[i].draw();
 	}
-
 }
 
 //--------------------------------------------------------------
@@ -116,7 +131,44 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
+	if (button == 0) {
+		for (int i = 0; i < vertices.size(); i++) {
+			int verticeX = vertices[i].getX();
+			int verticeY = vertices[i].getY();
+			if ((x >= (verticeX - 10) && x <= (verticeX + 10)) && (y >= (verticeY - 10) && y <= (verticeY + 10))) {
+				if (!executing) {
+					if (!startSelected) {
+						start = std::stoi(vertices[i].getId());
+						std::cout << "Start: " << start << std::endl;
+						vertices[i].setColor(ofColor(0, 0, 255));
+						startSelected = true;
+					}
+					else {
+						if (start != std::stoi(vertices[i].getId())) {
+							destination = std::stoi(vertices[i].getId());
+							std::cout << "Destination: " << destination << std::endl;
+							vertices[i].setColor(ofColor(0, 0, 255));
+							destinationSelected = true;
+							graph.BFSPath(G2, start, destination, 9, visitedToDraw, pathToDraw);
+						}
+					}
+					if (destinationSelected)
+						executing = true;
+				}
+			}
+		}
+	}
 
+	if (button == 2) {
+		if (!executing) {
+			for (int i = 0; i < vertices.size(); i++) {
+				vertices[i].setColor(ofColor(255, 255, 255));
+				vertice = 0;
+				startSelected = false;
+				destinationSelected = false;
+			}
+		}
+	}
 }
 
 //--------------------------------------------------------------
@@ -142,6 +194,18 @@ void ofApp::windowResized(int w, int h){
 //--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg){
 
+}
+
+void ofApp::delay(int number_of_seconds) {
+	// Converting time into milli_seconds 
+	int milli_seconds = 1000 * number_of_seconds;
+
+	// Stroing start time 
+	clock_t start_time = clock();
+
+	// looping till required time is not acheived 
+	while (clock() < start_time + milli_seconds)
+		;
 }
 
 //--------------------------------------------------------------
