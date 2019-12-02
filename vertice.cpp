@@ -19,10 +19,11 @@ void vertice::setup(std::string id, double x, double y) {
 }
 
 void vertice::draw() {
-	ofNoFill();
+	//ofNoFill();
 	//ofColor black(0, 0, 0);
 	ofSetColor(_color);
 	ofDrawCircle(_x, _y, 20);
+	ofSetColor(ofColor(0, 0, 0));
 	ofDrawBitmapString(_id, _x - 3, _y + 3);
 	ofSetColor(0, 0, 0);
 }

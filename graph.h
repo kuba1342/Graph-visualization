@@ -25,6 +25,10 @@ public:
 
 	void BFSPath(std::vector<std::vector<int>> G, int s, int dest, int v, std::vector<int> &visitedToDraw, std::vector<int> &pathToDraw);
 
+	int getV();
+
+	void setV(int newV);
+
 	~graph();
 };
 

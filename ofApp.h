@@ -8,7 +8,6 @@
 class ofApp : public ofBaseApp {
 
 	graph graph;
-	vector<vector<int>> G;
 	vector<vector<int>> G2;
 	vector<vertice> vertices;
 	vector<int> visitedToDraw;
@@ -43,4 +42,7 @@ class ofApp : public ofBaseApp {
 		void gotMessage(ofMessage msg);
 		
 		void delay(int number_of_seconds);
+		void reset();
+		void createGraphFour();
+		void createGraphThree();
 };

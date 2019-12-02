@@ -93,6 +93,14 @@ void graph::BFSPath(std::vector<std::vector<int>> G, int s, int dest, int v, std
 	}
 }
 
+int graph::getV() {
+	return _V;
+}
+
+void graph::setV(int newV) {
+	_V = newV;
+}
+
 
 graph::~graph()
 {

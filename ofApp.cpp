@@ -6,73 +6,13 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-	//ofSetFrameRate(60);
-
 	vertice = 0;
 
-	// Reading file
-	vector < string > linesOfTheFile;
-	ofBuffer buffer = ofBufferFromFile("tinyG.txt");
-	for (auto line : buffer.getLines()) {
-		linesOfTheFile.push_back(line);
-	}
+	graph.setup(9, 12);
 
-	int V = atoi(linesOfTheFile[0].c_str());
-	int E = atoi(linesOfTheFile[1].c_str());
-	graph.setup(V, E);
+	
 
-	int v1, v2;
-
-	G.resize(V);
-
-	for (int i = 2; i < linesOfTheFile.size(); i++) {
-		//std::cout << linesOfTheFile[i] << std::endl;
-		v1 = atoi(linesOfTheFile[i].c_str());
-		v2 = int(linesOfTheFile[i][2]) - 48;
-		G[v1].push_back(v2);
-	}
-
-	int x = 100;
-	int y = 100;
-	int loopCounter = 0;
-
-	vertices.resize(V);
-
-	for (int i = 0; i < G.size(); i++) {
-		//std::cout << i << " ";
-		vertices[i].setup(std::to_string(i), x, y);
-		x += 300;
-		loopCounter += 1;
-		if (loopCounter == 3) {
-			x = 100;
-			y += 300;
-			loopCounter = 0;
-		}
-		for (int j = 0; j < G[i].size(); j++) {
-			//std::cout << G[i][j] << " ";
-		}
-	}	
-
-	G2.assign(12, std::vector<int>());
-
-	graph.visited.assign(9, false);
-
-	graph.edge(0, 1, G2);
-	graph.edge(0, 3, G2);
-	graph.edge(1, 2, G2);
-	graph.edge(1, 4, G2);
-	graph.edge(2, 5, G2);
-	graph.edge(3, 4, G2);
-	graph.edge(3, 6, G2);
-	graph.edge(4, 5, G2);
-	graph.edge(4, 7, G2);
-	graph.edge(5, 8, G2);
-	graph.edge(6, 7, G2);
-	graph.edge(7, 8, G2);
-
-	//graph.BFS(2, G2, visitedToDraw);
-
-	//graph.BFSPath(G2, 0, 8, 9, visitedToDraw, pathToDraw);
+	createGraphThree();
 }
 
 //--------------------------------------------------------------
@@ -87,9 +27,8 @@ void ofApp::update(){
 			}
 			else {
 				executing = false;
-				// PRZESUN¥Æ POZA!!!!
 				for (int i = 0; i < pathToDraw.size(); i++) {
-					vertices[pathToDraw[i]].setColor(ofColor(0, 255, 0));
+					vertices[pathToDraw[i]].setColor(ofColor(0, 160, 0));
 				}
 				visitedToDraw.clear();
 				pathToDraw.clear();
@@ -102,16 +41,24 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 	for (int i = 0; i < vertices.size(); i++) {
-		for (int j = 0; j < G[i].size(); j++) {
-			ofDrawLine(vertices[i].getX(), vertices[i].getY(), vertices[G[i][j]].getX(), vertices[G[i][j]].getY());
+		for (int j = 0; j < G2[i].size(); j++) {
+			ofDrawLine(vertices[i].getX(), vertices[i].getY(), vertices[G2[i][j]].getX(), vertices[G2[i][j]].getY());
 		}
-		vertices[i].draw();
+		
 	}
+	for (int x = 0; x < vertices.size(); x++)
+		vertices[x].draw();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+	if (key == OF_KEY_F3 && !executing) {
+		createGraphThree();
+	}
 
+	if (key == OF_KEY_F4 && !executing) {
+		createGraphFour();
+	}
 }
 
 //--------------------------------------------------------------
@@ -149,7 +96,7 @@ void ofApp::mousePressed(int x, int y, int button){
 							std::cout << "Destination: " << destination << std::endl;
 							vertices[i].setColor(ofColor(0, 0, 255));
 							destinationSelected = true;
-							graph.BFSPath(G2, start, destination, 9, visitedToDraw, pathToDraw);
+							graph.BFSPath(G2, start, destination, graph.getV(), visitedToDraw, pathToDraw);
 						}
 					}
 					if (destinationSelected)
@@ -160,14 +107,7 @@ void ofApp::mousePressed(int x, int y, int button){
 	}
 
 	if (button == 2) {
-		if (!executing) {
-			for (int i = 0; i < vertices.size(); i++) {
-				vertices[i].setColor(ofColor(255, 255, 255));
-				vertice = 0;
-				startSelected = false;
-				destinationSelected = false;
-			}
-		}
+		reset();
 	}
 }
 
@@ -206,6 +146,105 @@ void ofApp::delay(int number_of_seconds) {
 	// looping till required time is not acheived 
 	while (clock() < start_time + milli_seconds)
 		;
+}
+
+void ofApp::reset() {
+	if (!executing) {
+		for (int i = 0; i < vertices.size(); i++) {
+			vertices[i].setColor(ofColor(255, 255, 255));
+			vertice = 0;
+			startSelected = false;
+			destinationSelected = false;
+		}
+	}
+}
+
+void ofApp::createGraphFour(){
+	G2.clear();
+	G2.assign(24, std::vector<int>());
+
+	graph.edge(0, 1, G2);
+	graph.edge(1, 2, G2);
+	graph.edge(2, 3, G2);
+	graph.edge(0, 4, G2);
+	graph.edge(1, 5, G2);
+	graph.edge(2, 6, G2);
+	graph.edge(3, 7, G2);
+	graph.edge(4, 5, G2);
+	graph.edge(5, 6, G2);
+	graph.edge(6, 7, G2);
+	graph.edge(4, 8, G2);
+	graph.edge(5, 9, G2);
+	graph.edge(6, 10, G2);
+	graph.edge(7, 11, G2);
+	graph.edge(8, 9, G2);
+	graph.edge(9, 10, G2);
+	graph.edge(10, 11, G2);
+	graph.edge(8, 12, G2);
+	graph.edge(9, 13, G2);
+	graph.edge(10, 14, G2);
+	graph.edge(11, 15, G2);
+	graph.edge(12, 13, G2);
+	graph.edge(13, 14, G2);
+	graph.edge(14, 15, G2);
+
+	graph.setV(16);
+	graph.visited.assign(graph.getV(), false);
+
+	vertices.resize(graph.getV());
+
+	int x = 100;
+	int y = 100;
+	int loopCounter = 0;
+
+	for (int i = 0; i < graph.getV(); i++) {
+		vertices[i].setup(std::to_string(i), x, y);
+		x += 200;
+		loopCounter += 1;
+		if (loopCounter == 4) {
+			x = 100;
+			y += 200;
+			loopCounter = 0;
+		}
+	}
+}
+
+void ofApp::createGraphThree() {
+	G2.clear();
+	G2.assign(12, std::vector<int>());
+
+	graph.visited.assign(graph.getV(), false);
+
+	graph.edge(0, 1, G2);
+	graph.edge(0, 3, G2);
+	graph.edge(1, 2, G2);
+	graph.edge(1, 4, G2);
+	graph.edge(2, 5, G2);
+	graph.edge(3, 4, G2);
+	graph.edge(3, 6, G2);
+	graph.edge(4, 5, G2);
+	graph.edge(4, 7, G2);
+	graph.edge(5, 8, G2);
+	graph.edge(6, 7, G2);
+	graph.edge(7, 8, G2);
+
+	graph.setV(9);
+	vertices.resize(graph.getV());
+
+	int x = 100;
+	int y = 100;
+	int loopCounter = 0;
+
+	for (int i = 0; i < graph.getV(); i++) {
+		vertices[i].setup(std::to_string(i), x, y);
+		x += 300;
+		loopCounter += 1;
+		if (loopCounter == 3) {
+			x = 100;
+			y += 300;
+			loopCounter = 0;
+		}
+	}
 }
 
 //--------------------------------------------------------------
