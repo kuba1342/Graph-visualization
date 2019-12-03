@@ -15,7 +15,10 @@ void graph::edge(int a, int b, std::vector<std::vector<int>> &G){
 	G[b].push_back(a);
 }
 
-void graph::BFS(int s, std::vector<std::vector<int>> G, std::vector<int> visitedToDraw) {
+void graph::BFS(int s, std::vector<std::vector<int>> G, int v, std::vector<int> &visitedToDraw) {
+	for (int i = 0; i < v; i++) {
+		visited[i] = false;
+	}
 	std::queue<int> q;
 
 	q.push(s);
@@ -25,6 +28,7 @@ void graph::BFS(int s, std::vector<std::vector<int>> G, std::vector<int> visited
 	while (!q.empty()) {
 		int f = q.front();
 		std::cout << f << " ";
+		visitedToDraw.push_back(f);
 		q.pop();
 
 		for (auto i = G[f].begin(); i != G[f].end(); i++) {
@@ -52,7 +56,6 @@ bool graph::BFS2(std::vector<std::vector<int>> G, int s, int dest, int v, int pr
 
 	while (!queue.empty()) {
 		int f = queue.front();
-		//std::cout << f << " ";
 		visitedToDraw.push_back(f);
 		queue.pop_front();
 		for (int i = 0; i < G[f].size(); i++) {

@@ -23,7 +23,7 @@ void vertice::draw() {
 	//ofColor black(0, 0, 0);
 	ofSetColor(_color);
 	ofDrawCircle(_x, _y, 20);
-	ofSetColor(ofColor(0, 0, 0));
+	ofSetColor(ofColor(_stringColor));
 	ofDrawBitmapString(_id, _x - 3, _y + 3);
 	ofSetColor(0, 0, 0);
 }
@@ -40,6 +40,10 @@ void vertice::drawBFS() {
 
 void vertice::setColor(ofColor color) {
 	_color = color;
+}
+
+void vertice::setStringColor(ofColor color) {
+	_stringColor = color;
 }
 
 int vertice::getX(){

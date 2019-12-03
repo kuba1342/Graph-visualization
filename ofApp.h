@@ -21,6 +21,7 @@ class ofApp : public ofBaseApp {
 	bool executing = false;
 	bool startSelected = false;
 	bool destinationSelected = false;
+	bool pathMode = true;
 
 	ofColor red = (255, 0, 0);
 
@@ -43,6 +44,8 @@ class ofApp : public ofBaseApp {
 		
 		void delay(int number_of_seconds);
 		void reset();
+		void changeMode();
+
 		void createGraphFour();
 		void createGraphThree();
 };

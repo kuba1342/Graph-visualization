@@ -9,6 +9,7 @@ class vertice {
 	double _x;
 	double _y;
 	ofColor _color;
+	ofColor _stringColor = ofColor(0, 0, 0);
 
 public:
 	vertice();
@@ -22,6 +23,8 @@ public:
 	void drawBFS();
 
 	void setColor(ofColor color);
+
+	void setStringColor(ofColor color);
 
 	int getX();
 

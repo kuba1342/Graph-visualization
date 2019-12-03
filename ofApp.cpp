@@ -10,8 +10,6 @@ void ofApp::setup(){
 
 	graph.setup(9, 12);
 
-	
-
 	createGraphThree();
 }
 
@@ -19,20 +17,28 @@ void ofApp::setup(){
 void ofApp::update(){
 	float now = ofGetElapsedTimef();
 	if (now > nextEventSeconds) {
-		if (executing) {
-			vertices[visitedToDraw[vertice]].setColor(ofColor(255, 0, 0));
-
-			if (vertice < visitedToDraw.size() - 1) {
-				vertice++;
-			}
-			else {
-				executing = false;
+		if (!executing) {
+			if (pathMode) {
 				for (int i = 0; i < pathToDraw.size(); i++) {
 					vertices[pathToDraw[i]].setColor(ofColor(0, 160, 0));
 				}
-				visitedToDraw.clear();
-				pathToDraw.clear();
 			}
+			else {
+				for (int i = 0; i < visitedToDraw.size(); i++) {
+					vertices[visitedToDraw[i]].setColor(ofColor(0, 160, 0));
+				}
+			}
+			visitedToDraw.clear();
+			pathToDraw.clear();
+		}
+		else {
+			vertices[visitedToDraw[vertice]].setColor(ofColor(255, 0, 0));
+			if (vertice < visitedToDraw.size() - 1) {
+				vertice++;
+			}
+			else 
+				executing = false;
+
 		}
 		nextEventSeconds = now + 3;
 	}
@@ -43,8 +49,7 @@ void ofApp::draw(){
 	for (int i = 0; i < vertices.size(); i++) {
 		for (int j = 0; j < G2[i].size(); j++) {
 			ofDrawLine(vertices[i].getX(), vertices[i].getY(), vertices[G2[i][j]].getX(), vertices[G2[i][j]].getY());
-		}
-		
+		}	
 	}
 	for (int x = 0; x < vertices.size(); x++)
 		vertices[x].draw();
@@ -58,6 +63,11 @@ void ofApp::keyPressed(int key){
 
 	if (key == OF_KEY_F4 && !executing) {
 		createGraphFour();
+	}
+
+	if (key == OF_KEY_TAB && !executing) {
+		changeMode();
+		std::cout << pathMode << std::endl;
 	}
 }
 
@@ -89,6 +99,10 @@ void ofApp::mousePressed(int x, int y, int button){
 						std::cout << "Start: " << start << std::endl;
 						vertices[i].setColor(ofColor(0, 0, 255));
 						startSelected = true;
+
+						if (!pathMode) {
+							graph.BFS(start, G2, graph.getV(), visitedToDraw);
+						}
 					}
 					else {
 						if (start != std::stoi(vertices[i].getId())) {
@@ -99,7 +113,7 @@ void ofApp::mousePressed(int x, int y, int button){
 							graph.BFSPath(G2, start, destination, graph.getV(), visitedToDraw, pathToDraw);
 						}
 					}
-					if (destinationSelected)
+					if (destinationSelected || (!pathMode && startSelected))
 						executing = true;
 				}
 			}
@@ -150,11 +164,37 @@ void ofApp::delay(int number_of_seconds) {
 
 void ofApp::reset() {
 	if (!executing) {
+		if (pathMode) {
+			for (int i = 0; i < vertices.size(); i++) {
+				vertices[i].setColor(ofColor(255, 255, 255));
+				vertices[i].setStringColor(ofColor(0, 0, 0));
+			}
+		}
+		else {
+			for (int i = 0; i < vertices.size(); i++) {
+				vertices[i].setColor(ofColor(0, 0, 0));
+				vertices[i].setStringColor(ofColor(255, 255, 255));
+			}
+		}
+		vertice = 0;
+		startSelected = false;
+		destinationSelected = false;
+	}
+}
+
+void ofApp::changeMode() {
+	if (pathMode) {
+		pathMode = false;
+		for (int i = 0; i < vertices.size(); i++) {
+			vertices[i].setColor(ofColor(0, 0, 0));
+			vertices[i].setStringColor(ofColor(255, 255, 255));
+		}
+	}
+	else {
+		pathMode = true;
 		for (int i = 0; i < vertices.size(); i++) {
 			vertices[i].setColor(ofColor(255, 255, 255));
-			vertice = 0;
-			startSelected = false;
-			destinationSelected = false;
+			vertices[i].setStringColor(ofColor(0, 0, 0));
 		}
 	}
 }

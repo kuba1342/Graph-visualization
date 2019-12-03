@@ -19,7 +19,7 @@ public:
 
 	void edge(int a, int b, std::vector<std::vector<int>> &G);
 
-	void BFS(int s, std::vector<std::vector<int>> G, std::vector<int> visitedToDraw);
+	void BFS(int s, std::vector<std::vector<int>> G, int v, std::vector<int> &visitedToDraw);
 
 	bool BFS2(std::vector<std::vector<int>> G, int s, int dest, int v, int pred[], int dist[], std::vector<int> &visitedToDraw);
 
