@@ -96,6 +96,26 @@ void graph::BFSPath(std::vector<std::vector<int>> G, int s, int dest, int v, std
 	}
 }
 
+void graph::DFSUtil(int v, bool visited[], std::vector<std::vector<int>> G, std::vector<int> &pathToDraw) {
+	visited[v] = true;
+	std::cout << v << " ";
+	pathToDraw.push_back(v);
+
+	for (auto i = G[v].begin(); i != G[v].end(); ++i)
+		if (!visited[*i])
+			DFSUtil(*i, visited, G, pathToDraw);
+}
+
+void graph::DFS(int v, std::vector<std::vector<int>> G, int V, std::vector<int> &pathToDraw) {
+	bool* visited = new bool[V];
+
+	for (int i = 0; i < V; i++) {
+		visited[i] = false;
+	}
+
+	DFSUtil(v, visited, G, pathToDraw);
+}
+
 int graph::getV() {
 	return _V;
 }

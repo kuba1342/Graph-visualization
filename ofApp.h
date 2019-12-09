@@ -22,6 +22,7 @@ class ofApp : public ofBaseApp {
 	bool startSelected = false;
 	bool destinationSelected = false;
 	bool pathMode = true;
+	int mode = 1;
 
 	ofColor red = (255, 0, 0);
 

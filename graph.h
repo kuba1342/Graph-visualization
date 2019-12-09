@@ -25,6 +25,10 @@ public:
 
 	void BFSPath(std::vector<std::vector<int>> G, int s, int dest, int v, std::vector<int> &visitedToDraw, std::vector<int> &pathToDraw);
 
+	void DFSUtil(int v, bool visited[], std::vector<std::vector<int>> G, std::vector<int> &pathToDraw);
+
+	void DFS(int v, std::vector<std::vector<int>> G, int V, std::vector<int> &pathToDraw);
+
 	int getV();
 
 	void setV(int newV);
