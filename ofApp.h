@@ -9,6 +9,7 @@ class ofApp : public ofBaseApp {
 
 	graph graph;
 	vector<vector<int>> G2;
+	vector<vector<int>> weightVector;
 	vector<vertice> vertices;
 	vector<int> visitedToDraw;
 	vector<int> pathToDraw;
@@ -17,6 +18,7 @@ class ofApp : public ofBaseApp {
 	int start;
 	int destination;
 	float nextEventSeconds = 0;
+	int count = 0;
 
 	bool executing = false;
 	bool startSelected = false;

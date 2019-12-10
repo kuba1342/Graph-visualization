@@ -8,11 +8,29 @@ graph::graph()
 void graph::setup(int V, int E) {
 	_V = V;
 	_E = E;
+	dist = new int[_V];
+	sptSet = new bool[_V];
+
+	for (int i = 0; i < _V; i++)
+		sptSet[i] = false, dist[i] = INT_MAX;
+}
+
+void graph::drawEdgeWeight(vertice a, vertice b, int weight) {
+	double midX = (a.getX() + b.getX()) / 2;
+	double midY = (a.getY() + b.getY()) / 2;
+	ofDrawBitmapString(std::to_string(weight), midX + 10, midY + 15);
 }
 
 void graph::edge(int a, int b, std::vector<std::vector<int>> &G){
 	G[a].push_back(b);
 	G[b].push_back(a);
+}
+
+void graph::weightEdge(int a, int b, std::vector<std::vector<int>>& G, int weight, std::vector<std::vector<int>> &weightVector) {
+	G[a].push_back(b);
+	G[b].push_back(a);
+	weightVector[a][b] = weight;
+	weightVector[b][a] = weight;
 }
 
 void graph::BFS(int s, std::vector<std::vector<int>> G, int v, std::vector<int> &visitedToDraw) {
@@ -116,12 +134,58 @@ void graph::DFS(int v, std::vector<std::vector<int>> G, int V, std::vector<int> 
 	DFSUtil(v, visited, G, pathToDraw);
 }
 
+int graph::minDistance(int dist[], bool sptSet[], int V) {
+	int min = INT_MAX, min_index;
+
+	for (int v = 0; v < V; v++) 
+		if (sptSet[v] == false && dist[v] <= min) {
+			min = dist[v], min_index = v;
+			// set vertice weight
+		}
+	return min_index;
+}
+
+void graph::Dijkstra(std::vector<std::vector<int>> weightVector, int s, int dist[], bool sptSet[], std::vector<vertice> &vertices) {
+	dist[s] = 0;
+
+	// rysowaæ jak BFS
+
+	int u = minDistance(dist, sptSet, _V);
+	sptSet[u] = true;
+	for (int v = 0; v < _V; v++)
+		if (!sptSet[v] && weightVector[u][v] && dist[u] != INT_MAX
+			&& dist[u] + weightVector[u][v] < dist[v]) {
+			dist[v] = dist[u] + weightVector[u][v];
+			vertices[v].setWeight(dist[v]);
+		}
+
+	for (int i = 0; i < _V; i++)
+		std::cout << i << " " << dist[i] << std::endl;
+
+}
+
 int graph::getV() {
 	return _V;
 }
 
 void graph::setV(int newV) {
 	_V = newV;
+}
+
+int * graph::getDist() {
+	return dist;
+}
+
+void graph::setDist(int newDist[]) {
+	dist = newDist;
+}
+
+bool * graph::getSptSet() {
+	return sptSet;
+}
+
+void graph::setSptSet(bool newSptSet[]) {
+	sptSet = newSptSet;
 }
 
 

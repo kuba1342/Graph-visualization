@@ -10,6 +10,33 @@ void ofApp::setup(){
 
 	graph.setup(9, 12);
 
+	// Dijkstra test
+
+	weightVector.assign(graph.getV(), std::vector<int>());
+	for (int i = 0; i < weightVector.size(); i++) {
+		weightVector[i].assign(graph.getV(), 0);
+	}
+
+	G2.clear();
+	G2.assign(12, std::vector<int>());
+
+	graph.weightEdge(0, 1, G2, 4, weightVector);
+	graph.weightEdge(0, 3, G2, 5, weightVector);
+	graph.weightEdge(1, 2, G2, 6, weightVector);
+	graph.weightEdge(1, 4, G2, 7, weightVector);
+	graph.weightEdge(2, 5, G2, 8, weightVector);
+	graph.weightEdge(3, 4, G2, 8, weightVector);
+	graph.weightEdge(3, 6, G2, 10, weightVector);
+	graph.weightEdge(4, 5, G2, 11, weightVector);
+	graph.weightEdge(4, 7, G2, 12, weightVector);
+	graph.weightEdge(5, 8, G2, 13, weightVector);
+	graph.weightEdge(6, 7, G2, 14, weightVector);
+	graph.weightEdge(7, 8, G2, 15, weightVector);
+
+	// ------------------------------
+
+	//graph.Dijkstra(weightVector, 0, 0, graph.getDist(), graph.getSptSet());
+
 	createGraphThree();
 
 	//graph.DFS(0, G2, graph.getV(), pathToDraw);
@@ -18,7 +45,22 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
 	float now = ofGetElapsedTimef();
+
 	if (now > nextEventSeconds) {
+		// Dijkstra -------------------------
+		if (count < graph.getV()) {
+			graph.BFS(0, G2, graph.getV(), visitedToDraw);
+
+			
+			vertices[visitedToDraw[count]].setColor(ofColor(0, 255, 0));
+
+			std::cout << "test: " << count;
+		
+			//graph.Dijkstra(weightVector, 0, graph.getDist(), graph.getSptSet(), vertices);
+			count++;
+		}
+		// ----------------------------------
+
 		if (!executing) {			
 			if (mode == 0) {
 				for (int i = 0; i < visitedToDraw.size(); i++)
@@ -53,6 +95,8 @@ void ofApp::update(){
 
 		}
 		nextEventSeconds = now + 3;
+		if (count < graph.getV() - 1)
+			graph.Dijkstra(weightVector, 0, graph.getDist(), graph.getSptSet(), vertices);	// ----------------------------------------------------------
 	}
 }
 
@@ -61,10 +105,15 @@ void ofApp::draw(){
 	for (int i = 0; i < vertices.size(); i++) {
 		for (int j = 0; j < G2[i].size(); j++) {
 			ofDrawLine(vertices[i].getX(), vertices[i].getY(), vertices[G2[i][j]].getX(), vertices[G2[i][j]].getY());
+			//if (mode == 3)
+			graph.drawEdgeWeight(vertices[i], vertices[G2[i][j]], weightVector[i][G2[i][j]]);
 		}	
 	}
-	for (int x = 0; x < vertices.size(); x++)
+	for (int x = 0; x < vertices.size(); x++) {
 		vertices[x].draw();
+		//if (mode == 3)
+		vertices[x].drawWeight();
+	}
 }
 
 //--------------------------------------------------------------
