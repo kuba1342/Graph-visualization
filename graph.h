@@ -41,7 +41,9 @@ public:
 
 	int minDistance(int dist[], bool sptSet[], int V);
 
-	void Dijkstra(std::vector<std::vector<int>> weightVector, int s, int dist[], bool sptSet[], std::vector<vertice> &vertices);
+	void Dijkstra(std::vector<std::vector<int>> weightVector, int s, int dist[], bool sptSet[], std::vector<vertice> &vertices, int &current);
+
+	void prepareDijkstra();
 
 	int getV();
 

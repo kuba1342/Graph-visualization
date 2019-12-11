@@ -11,6 +11,7 @@ class ofApp : public ofBaseApp {
 	vector<vector<int>> G2;
 	vector<vector<int>> weightVector;
 	vector<vertice> vertices;
+	vector<vertice> verticesWeight;
 	vector<int> visitedToDraw;
 	vector<int> pathToDraw;
 
@@ -19,6 +20,7 @@ class ofApp : public ofBaseApp {
 	int destination;
 	float nextEventSeconds = 0;
 	int count = 0;
+	int current;
 
 	bool executing = false;
 	bool startSelected = false;
@@ -49,6 +51,11 @@ class ofApp : public ofBaseApp {
 		void reset();
 		void changeMode();
 
+		void clearVectors();
+
 		void createGraphFour();
 		void createGraphThree();
+
+		void createWeightGraphFour();
+		void createWeightGraphThree();
 };

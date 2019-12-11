@@ -8,11 +8,13 @@ class vertice {
 	std::string _id;
 	double _x;
 	double _y;
-	int _weight = 0;
+	int _weight = INT_MAX;
 	std::string defaultWeight = "INF";
 	bool weightBool = false;
+	bool visited = false;
 	ofColor _color;
 	ofColor _stringColor = ofColor(0, 0, 0);
+	ofColor _weightColor = ofColor(0, 0, 0);
 
 public:
 	vertice();
@@ -31,6 +33,8 @@ public:
 
 	void setStringColor(ofColor color);
 
+	void setWeightColor(ofColor color);
+
 	void setWeight(int weight);
 
 	int getX();
@@ -39,7 +43,13 @@ public:
 
 	int getWeight();
 
+	void setWeightBool(bool weight);
+
 	bool getWeightBool();
+
+	void setVisited(bool newStatus);
+
+	bool getVisited();
 
 	std::string getId();
 

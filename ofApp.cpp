@@ -10,36 +10,7 @@ void ofApp::setup(){
 
 	graph.setup(9, 12);
 
-	// Dijkstra test
-
-	weightVector.assign(graph.getV(), std::vector<int>());
-	for (int i = 0; i < weightVector.size(); i++) {
-		weightVector[i].assign(graph.getV(), 0);
-	}
-
-	G2.clear();
-	G2.assign(12, std::vector<int>());
-
-	graph.weightEdge(0, 1, G2, 4, weightVector);
-	graph.weightEdge(0, 3, G2, 5, weightVector);
-	graph.weightEdge(1, 2, G2, 6, weightVector);
-	graph.weightEdge(1, 4, G2, 7, weightVector);
-	graph.weightEdge(2, 5, G2, 8, weightVector);
-	graph.weightEdge(3, 4, G2, 8, weightVector);
-	graph.weightEdge(3, 6, G2, 10, weightVector);
-	graph.weightEdge(4, 5, G2, 11, weightVector);
-	graph.weightEdge(4, 7, G2, 12, weightVector);
-	graph.weightEdge(5, 8, G2, 13, weightVector);
-	graph.weightEdge(6, 7, G2, 14, weightVector);
-	graph.weightEdge(7, 8, G2, 15, weightVector);
-
-	// ------------------------------
-
-	//graph.Dijkstra(weightVector, 0, 0, graph.getDist(), graph.getSptSet());
-
 	createGraphThree();
-
-	//graph.DFS(0, G2, graph.getV(), pathToDraw);
 }
 
 //--------------------------------------------------------------
@@ -47,20 +18,6 @@ void ofApp::update(){
 	float now = ofGetElapsedTimef();
 
 	if (now > nextEventSeconds) {
-		// Dijkstra -------------------------
-		if (count < graph.getV()) {
-			graph.BFS(0, G2, graph.getV(), visitedToDraw);
-
-			
-			vertices[visitedToDraw[count]].setColor(ofColor(0, 255, 0));
-
-			std::cout << "test: " << count;
-		
-			//graph.Dijkstra(weightVector, 0, graph.getDist(), graph.getSptSet(), vertices);
-			count++;
-		}
-		// ----------------------------------
-
 		if (!executing) {			
 			if (mode == 0) {
 				for (int i = 0; i < visitedToDraw.size(); i++)
@@ -71,12 +28,18 @@ void ofApp::update(){
 					vertices[pathToDraw[i]].setColor(ofColor(0, 160, 0));
 			}
 			
-			visitedToDraw.clear();
-			pathToDraw.clear();
+			clearVectors();
 		}
 		else {
-			if (mode != 2) {
-				vertices[visitedToDraw[vertice]].setColor(ofColor(255, 0, 0));
+			if (mode == 1 || mode == 0) {
+				vertices[visitedToDraw[vertice]].setColor(ofColor(128, 0, 128));
+
+				if (vertice > 0)
+					vertices[visitedToDraw[vertice - 1]].setColor(ofColor(255, 255, 0));
+
+				if (vertice > 1)
+					vertices[visitedToDraw[vertice - 2]].setColor(ofColor(255, 0, 0));
+				
 				if (vertice < visitedToDraw.size() - 1) {
 					vertice++;
 				}
@@ -85,7 +48,14 @@ void ofApp::update(){
 			}
 
 			if (mode == 2) {
-				vertices[pathToDraw[vertice]].setColor(ofColor(255, 0, 0));
+				vertices[pathToDraw[vertice]].setColor(ofColor(128, 0, 128));
+
+				if (vertice > 0)
+					vertices[pathToDraw[vertice - 1]].setColor(ofColor(255, 255, 0));
+
+				if (vertice > 1)
+					vertices[pathToDraw[vertice - 2]].setColor(ofColor(255, 0, 0));
+
 				if (vertice < pathToDraw.size() - 1) {
 					vertice++;
 				}
@@ -93,10 +63,43 @@ void ofApp::update(){
 					executing = false;
 			}
 
+			if (mode == 3) {
+				if (count < graph.getV()) {
+					vertices[current].setColor(ofColor(128, 0, 128));
+					verticesWeight = vertices;
+					int previous = current;
+					graph.Dijkstra(weightVector, start, graph.getDist(), graph.getSptSet(), vertices, current);
+					vertices[current].setVisited(true);
+
+					for (int i = 0; i < vertices.size(); i++) {
+						if (verticesWeight[i].getWeight() != vertices[i].getWeight()) {
+							if (i != current) {
+								vertices[i].setWeightColor(ofColor(255, 0, 0));
+								vertices[i].setColor(ofColor(255, 0, 0));
+							}
+						}
+						else {
+							vertices[i].setWeightColor(ofColor(0, 0, 0));
+							if (vertices[i].getVisited())
+								if (i != current)
+									vertices[i].setColor(ofColor(0, 255, 0));
+								else {
+									vertices[current].setColor(ofColor(128, 0, 128));
+								}
+							else
+								if (i != current)
+									vertices[i].setColor(ofColor(255, 255, 0));
+						}
+						if (i == previous)
+							vertices[i].setColor(ofColor(0, 100, 255));
+					}
+					count++;
+				}
+				else 
+					executing = false;
+			}
 		}
 		nextEventSeconds = now + 3;
-		if (count < graph.getV() - 1)
-			graph.Dijkstra(weightVector, 0, graph.getDist(), graph.getSptSet(), vertices);	// ----------------------------------------------------------
 	}
 }
 
@@ -105,31 +108,42 @@ void ofApp::draw(){
 	for (int i = 0; i < vertices.size(); i++) {
 		for (int j = 0; j < G2[i].size(); j++) {
 			ofDrawLine(vertices[i].getX(), vertices[i].getY(), vertices[G2[i][j]].getX(), vertices[G2[i][j]].getY());
-			//if (mode == 3)
-			graph.drawEdgeWeight(vertices[i], vertices[G2[i][j]], weightVector[i][G2[i][j]]);
+			if (mode == 3)
+				graph.drawEdgeWeight(vertices[i], vertices[G2[i][j]], weightVector[i][G2[i][j]]);
 		}	
 	}
 	for (int x = 0; x < vertices.size(); x++) {
 		vertices[x].draw();
-		//if (mode == 3)
-		vertices[x].drawWeight();
+		if (mode == 3)
+			vertices[x].drawWeight();
 	}
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 	if (key == OF_KEY_F3 && !executing) {
-		createGraphThree();
+		if (mode != 3)
+			createGraphThree();
+		else
+			createWeightGraphThree();
+
 		reset();
 	}
 
 	if (key == OF_KEY_F4 && !executing) {
-		createGraphFour();
+		if (mode != 3)
+			createGraphFour();
+		else
+			createWeightGraphFour();
+
 		reset();
 	}
 
 	if (key == OF_KEY_TAB && !executing) {
 		changeMode();
+		if (mode == 3)
+			createWeightGraphThree();
+		reset();
 		std::cout << pathMode << std::endl;
 	}
 }
@@ -169,6 +183,13 @@ void ofApp::mousePressed(int x, int y, int button){
 
 						if (mode == 2) {
 							graph.DFS(start, G2, graph.getV(), pathToDraw);
+						}
+
+						if (mode == 3) {
+							graph.BFS(start, G2, graph.getV(), visitedToDraw);
+							graph.prepareDijkstra();
+							count = 0;
+							current = start;
 						}
 					}
 					else {
@@ -231,6 +252,10 @@ void ofApp::delay(int number_of_seconds) {
 
 void ofApp::reset() {
 	if (!executing) {
+
+		for (int i = 0; i < vertices.size(); i++)
+			vertices[i].setVisited(false);
+
 		if (mode == 0) {
 			pathMode = false;
 			for (int i = 0; i < vertices.size(); i++) {
@@ -254,12 +279,23 @@ void ofApp::reset() {
 			}
 		}
 
+		if (mode == 3) {
+			pathMode = false;
+			for (int i = 0; i < vertices.size(); i++) {
+				vertices[i].setColor(ofColor(255, 255, 0));
+				vertices[i].setStringColor(ofColor(0, 0, 0));
+				vertices[i].setWeight(INT_MAX);
+				vertices[i].setWeightBool(false);
+			}
+		}
+
 		vertice = 0;
 		startSelected = false;
 		destinationSelected = false;
 		for (int i = 0; i < graph.getV(); i++) {
 			graph.visited[i] = false;
 		}
+		verticesWeight.clear();
 	}
 }
 
@@ -267,7 +303,7 @@ void ofApp::changeMode() {
 	reset();
 
 	mode++;
-	if (mode > 2)
+	if (mode > 3)
 		mode = 0;
 
 	std::cout << mode << " ";
@@ -294,6 +330,19 @@ void ofApp::changeMode() {
 			vertices[i].setStringColor(ofColor(255, 255, 255));
 		}
 	}
+
+	if (mode == 3) {
+		pathMode = false;
+		for (int i = 0; i < vertices.size(); i++) {
+			vertices[i].setColor(ofColor(255, 255, 0));
+			vertices[i].setStringColor(ofColor(0, 0, 0));
+		}
+	}
+}
+
+void ofApp::clearVectors() {
+	visitedToDraw.clear();
+	pathToDraw.clear();
 }
 
 void ofApp::createGraphFour(){
@@ -367,6 +416,102 @@ void ofApp::createGraphThree() {
 
 	graph.setV(9);
 	vertices.resize(graph.getV());
+
+	int x = 100;
+	int y = 100;
+	int loopCounter = 0;
+
+	for (int i = 0; i < graph.getV(); i++) {
+		vertices[i].setup(std::to_string(i), x, y);
+		x += 300;
+		loopCounter += 1;
+		if (loopCounter == 3) {
+			x = 100;
+			y += 300;
+			loopCounter = 0;
+		}
+	}
+}
+
+void ofApp::createWeightGraphFour() {
+	G2.clear();
+	G2.assign(24, std::vector<int>());
+
+	graph.setV(16);
+	graph.visited.assign(graph.getV(), false);
+
+	weightVector.assign(graph.getV(), std::vector<int>());
+	for (int i = 0; i < weightVector.size(); i++) {
+		weightVector[i].assign(graph.getV(), 0);
+	}
+
+	graph.weightEdge(0, 1, G2, 4, weightVector);
+	graph.weightEdge(1, 2, G2, 5, weightVector);
+	graph.weightEdge(2, 3, G2, 6, weightVector);
+	graph.weightEdge(0, 4, G2, 7, weightVector);
+	graph.weightEdge(1, 5, G2, 8, weightVector);
+	graph.weightEdge(2, 6, G2, 9, weightVector);
+	graph.weightEdge(3, 7, G2, 10, weightVector);
+	graph.weightEdge(4, 5, G2, 11, weightVector);
+	graph.weightEdge(5, 6, G2, 12, weightVector);
+	graph.weightEdge(6, 7, G2, 13, weightVector);
+	graph.weightEdge(4, 8, G2, 14, weightVector);
+	graph.weightEdge(5, 9, G2, 15, weightVector);
+	graph.weightEdge(6, 10, G2, 16, weightVector);
+	graph.weightEdge(7, 11, G2, 17, weightVector);
+	graph.weightEdge(8, 9, G2, 18, weightVector);
+	graph.weightEdge(9, 10, G2, 19, weightVector);
+	graph.weightEdge(10, 11, G2, 20, weightVector);
+	graph.weightEdge(8, 12, G2, 21, weightVector);
+	graph.weightEdge(9, 13, G2, 22, weightVector);
+	graph.weightEdge(10, 14, G2, 23, weightVector);
+	graph.weightEdge(11, 15, G2, 24, weightVector);
+	graph.weightEdge(12, 13, G2, 25, weightVector);
+	graph.weightEdge(13, 14, G2, 26, weightVector);
+	graph.weightEdge(14, 15, G2, 27, weightVector);
+
+	vertices.resize(graph.getV());
+
+	int x = 100;
+	int y = 100;
+	int loopCounter = 0;
+
+	for (int i = 0; i < graph.getV(); i++) {
+		vertices[i].setup(std::to_string(i), x, y);
+		x += 200;
+		loopCounter += 1;
+		if (loopCounter == 4) {
+			x = 100;
+			y += 200;
+			loopCounter = 0;
+		}
+	}
+}
+
+void ofApp::createWeightGraphThree() {
+	G2.clear();
+	G2.assign(12, std::vector<int>());
+
+	graph.setV(9);
+	vertices.resize(graph.getV());
+
+	weightVector.assign(graph.getV(), std::vector<int>());
+	for (int i = 0; i < weightVector.size(); i++) {
+		weightVector[i].assign(graph.getV(), 0);
+	}
+
+	graph.weightEdge(0, 1, G2, 4, weightVector);
+	graph.weightEdge(0, 3, G2, 5, weightVector);
+	graph.weightEdge(1, 2, G2, 6, weightVector);
+	graph.weightEdge(1, 4, G2, 7, weightVector);
+	graph.weightEdge(2, 5, G2, 8, weightVector);
+	graph.weightEdge(3, 4, G2, 8, weightVector);
+	graph.weightEdge(3, 6, G2, 10, weightVector);
+	graph.weightEdge(4, 5, G2, 11, weightVector);
+	graph.weightEdge(4, 7, G2, 12, weightVector);
+	graph.weightEdge(5, 8, G2, 13, weightVector);
+	graph.weightEdge(6, 7, G2, 14, weightVector);
+	graph.weightEdge(7, 8, G2, 15, weightVector);
 
 	int x = 100;
 	int y = 100;

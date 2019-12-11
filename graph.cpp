@@ -18,7 +18,7 @@ void graph::setup(int V, int E) {
 void graph::drawEdgeWeight(vertice a, vertice b, int weight) {
 	double midX = (a.getX() + b.getX()) / 2;
 	double midY = (a.getY() + b.getY()) / 2;
-	ofDrawBitmapString(std::to_string(weight), midX + 10, midY + 15);
+	ofDrawBitmapString("_" + std::to_string(weight) + "_", midX + 10, midY + 15);
 }
 
 void graph::edge(int a, int b, std::vector<std::vector<int>> &G){
@@ -140,17 +140,15 @@ int graph::minDistance(int dist[], bool sptSet[], int V) {
 	for (int v = 0; v < V; v++) 
 		if (sptSet[v] == false && dist[v] <= min) {
 			min = dist[v], min_index = v;
-			// set vertice weight
 		}
 	return min_index;
 }
 
-void graph::Dijkstra(std::vector<std::vector<int>> weightVector, int s, int dist[], bool sptSet[], std::vector<vertice> &vertices) {
+void graph::Dijkstra(std::vector<std::vector<int>> weightVector, int s, int dist[], bool sptSet[], std::vector<vertice> &vertices, int &current) {
 	dist[s] = 0;
-
-	// rysowaæ jak BFS
-
+	vertices[s].setWeight(dist[s]);
 	int u = minDistance(dist, sptSet, _V);
+	current = u;
 	sptSet[u] = true;
 	for (int v = 0; v < _V; v++)
 		if (!sptSet[v] && weightVector[u][v] && dist[u] != INT_MAX
@@ -159,9 +157,14 @@ void graph::Dijkstra(std::vector<std::vector<int>> weightVector, int s, int dist
 			vertices[v].setWeight(dist[v]);
 		}
 
-	for (int i = 0; i < _V; i++)
-		std::cout << i << " " << dist[i] << std::endl;
+	//for (int i = 0; i < _V; i++)
+		//std::cout << i << " " << dist[i] << std::endl;
 
+}
+
+void graph::prepareDijkstra() {
+	for (int i = 0; i < _V; i++)
+		dist[i] = INT_MAX, sptSet[i] = false;
 }
 
 int graph::getV() {
