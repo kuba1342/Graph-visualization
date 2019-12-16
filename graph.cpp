@@ -5,6 +5,12 @@ graph::graph()
 {
 }
 
+void graph::setup(int V) {
+	_V = V;
+	dist = new int[_V];
+	sptSet = new bool[_V];
+}
+
 void graph::setup(int V, int E) {
 	_V = V;
 	_E = E;
@@ -18,7 +24,7 @@ void graph::setup(int V, int E) {
 void graph::drawEdgeWeight(vertice a, vertice b, int weight) {
 	double midX = (a.getX() + b.getX()) / 2;
 	double midY = (a.getY() + b.getY()) / 2;
-	ofDrawBitmapString("_" + std::to_string(weight) + "_", midX + 10, midY + 15);
+	ofDrawBitmapString("|" + std::to_string(weight) + "|", midX + 10, midY + 15);
 }
 
 void graph::edge(int a, int b, std::vector<std::vector<int>> &G){

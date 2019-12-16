@@ -21,6 +21,8 @@ public:
 
 	graph();
 
+	void setup(int V);
+
 	void setup(int V, int E);
 
 	void drawEdgeWeight(vertice a, vertice b, int weight);

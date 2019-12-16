@@ -12,6 +12,7 @@ class ofApp : public ofBaseApp {
 	vector<vector<int>> weightVector;
 	vector<vertice> vertices;
 	vector<vertice> verticesWeight;
+	vector<vector <double>> verticesPos;
 	vector<int> visitedToDraw;
 	vector<int> pathToDraw;
 
@@ -46,7 +47,7 @@ class ofApp : public ofBaseApp {
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-		
+
 		void delay(int number_of_seconds);
 		void reset();
 		void changeMode();
@@ -55,7 +56,8 @@ class ofApp : public ofBaseApp {
 
 		void createGraphFour();
 		void createGraphThree();
-
 		void createWeightGraphFour();
 		void createWeightGraphThree();
+		void createGraph(string filename);
+
 };

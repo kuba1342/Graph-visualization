@@ -11,6 +11,8 @@ void ofApp::setup(){
 	graph.setup(9, 12);
 
 	createGraphThree();
+	
+	//createGraph("test.txt");
 }
 
 //--------------------------------------------------------------
@@ -136,6 +138,11 @@ void ofApp::keyPressed(int key){
 		else
 			createWeightGraphFour();
 
+		reset();
+	}
+
+	if (key == OF_KEY_F5 && !executing) {
+		createGraph("test.txt");
 		reset();
 	}
 
@@ -398,6 +405,7 @@ void ofApp::createGraphFour(){
 void ofApp::createGraphThree() {
 	G2.clear();
 	G2.assign(12, std::vector<int>());
+	graph.setup(9, 12);
 
 	graph.visited.assign(graph.getV(), false);
 
@@ -436,6 +444,7 @@ void ofApp::createGraphThree() {
 void ofApp::createWeightGraphFour() {
 	G2.clear();
 	G2.assign(24, std::vector<int>());
+	graph.setup(16, 24);
 
 	graph.setV(16);
 	graph.visited.assign(graph.getV(), false);
@@ -526,6 +535,130 @@ void ofApp::createWeightGraphThree() {
 			y += 300;
 			loopCounter = 0;
 		}
+	}
+}
+
+void ofApp::createGraph(string filename) {
+	std::vector<string> linesOfTheFile;
+	ofBuffer buffer = ofBufferFromFile(filename);
+
+	for (auto line : buffer.getLines()) {
+		//std::cout << line.c_str() << std::endl;
+		linesOfTheFile.push_back(line);
+	}
+
+	ofFile fileToRead(ofToDataPath(filename));
+
+	int V = atoi(linesOfTheFile[0].c_str());
+
+	graph.setup(V);
+
+	G2.clear();
+	G2.resize(V);
+	vertices.resize(graph.getV());
+	verticesPos.resize(V);
+	weightVector.clear();
+	weightVector.assign(graph.getV(), std::vector<int>());
+	for (int i = 0; i < weightVector.size(); i++) {
+		weightVector[i].assign(graph.getV(), 0);
+	}
+
+	int v1, v2;
+	double firstX, firstY, secondX, secondY;
+	int weight;
+
+	for (int i = 1; i < linesOfTheFile.size(); i++) {
+		//std::cout << linesOfTheFile[i] << std::endl;
+		v1 = atoi(linesOfTheFile[i].c_str());
+		
+		string number;
+		number = linesOfTheFile[i][2];
+
+		int nextDigit;
+
+		// firstX
+		for (int j = 3; j < linesOfTheFile[i].size(); j++) {
+			if (linesOfTheFile[i][j] != ' ') {
+				number += linesOfTheFile[i][j];
+			}
+			else {
+				nextDigit = j + 1;
+				break;
+			}
+		}
+		firstX = stod(number);
+
+		// firstY
+		number = "";
+		for (int j = nextDigit; j < linesOfTheFile[i].size(); j++) {
+			if (linesOfTheFile[i][j] != ' ') {
+				number += linesOfTheFile[i][j];
+			}
+			else {
+				nextDigit = j + 1;
+				break;
+			}
+		}
+		firstY = stod(number);
+
+		// second vertice
+		v2 = int(linesOfTheFile[i][nextDigit]) - 48;
+		nextDigit += 2;
+
+		// secondX
+		number = "";
+		for (int j = nextDigit; j < linesOfTheFile[i].size(); j++) {
+			if (linesOfTheFile[i][j] != ' ') {
+				number += linesOfTheFile[i][j];
+			}
+			else {
+				nextDigit = j + 1;
+				break;
+			}
+		}
+		secondX = stod(number);
+
+		// secondY
+		number = "";
+		for (int j = nextDigit; j < linesOfTheFile[i].size(); j++) {
+			if (linesOfTheFile[i][j] != ' ') {
+				number += linesOfTheFile[i][j];
+			}
+			else {
+				nextDigit = j + 1;
+				break;
+			}
+		}
+		secondY = stod(number);
+
+		// weight
+		number = "";
+		for (int j = nextDigit; j < linesOfTheFile[i].size(); j++) {
+			if (linesOfTheFile[i][j] != ' ') {
+				number += linesOfTheFile[i][j];
+			}
+			else {
+				nextDigit = j + 1;
+				break;
+			}
+		}
+		weight = stoi(number);
+
+		graph.weightEdge(v1, v2, G2, weight, weightVector);
+
+		if (verticesPos[v1].size() == 0) {
+			verticesPos[v1].push_back(firstX);
+			verticesPos[v1].push_back(firstY);
+		}
+
+		if (verticesPos[v2].size() == 0) {
+			verticesPos[v2].push_back(secondX);
+			verticesPos[v2].push_back(secondY);
+		}
+	}
+
+	for (int i = 0; i < vertices.size(); i++) {
+		vertices[i].setup(std::to_string(i), verticesPos[i][0], verticesPos[i][1]);
 	}
 }
 
