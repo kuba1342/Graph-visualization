@@ -96,6 +96,7 @@ void ofApp::update(){
 							vertices[i].setColor(ofColor(0, 100, 255));
 					}
 					count++;
+					vertices[start].setColor(ofColor(230, 230, 230));
 				}
 				else 
 					executing = false;
