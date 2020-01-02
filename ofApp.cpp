@@ -17,93 +17,10 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	float now = ofGetElapsedTimef();
-
-	if (now > nextEventSeconds) {
-		if (!executing) {			
-			if (mode == 0) {
-				for (int i = 0; i < visitedToDraw.size(); i++)
-					vertices[visitedToDraw[i]].setColor(ofColor(0, 160, 0));
-			}
-			if (mode == 2 || mode == 1) {
-				for (int i = 0; i < pathToDraw.size(); i++) 
-					vertices[pathToDraw[i]].setColor(ofColor(0, 160, 0));
-			}
-			
-			clearVectors();
-		}
-		else {
-			if (mode == 1 || mode == 0) {
-				vertices[visitedToDraw[vertice]].setColor(ofColor(128, 0, 128));
-
-				if (vertice > 0)
-					vertices[visitedToDraw[vertice - 1]].setColor(ofColor(255, 255, 0));
-
-				if (vertice > 1)
-					vertices[visitedToDraw[vertice - 2]].setColor(ofColor(255, 0, 0));
-				
-				if (vertice < visitedToDraw.size() - 1) {
-					vertice++;
-				}
-				else
-					executing = false;
-			}
-
-			if (mode == 2) {
-				vertices[pathToDraw[vertice]].setColor(ofColor(128, 0, 128));
-
-				if (vertice > 0)
-					vertices[pathToDraw[vertice - 1]].setColor(ofColor(255, 255, 0));
-
-				if (vertice > 1)
-					vertices[pathToDraw[vertice - 2]].setColor(ofColor(255, 0, 0));
-
-				if (vertice < pathToDraw.size() - 1) {
-					vertice++;
-				}
-				else
-					executing = false;
-			}
-
-			if (mode == 3) {
-				if (count < graph.getV()) {
-					vertices[current].setColor(ofColor(128, 0, 128));
-					verticesWeight = vertices;
-					int previous = current;
-					graph.Dijkstra(weightVector, start, graph.getDist(), graph.getSptSet(), vertices, current);
-					vertices[current].setVisited(true);
-
-					for (int i = 0; i < vertices.size(); i++) {
-						if (verticesWeight[i].getWeight() != vertices[i].getWeight()) {
-							if (i != current) {
-								vertices[i].setWeightColor(ofColor(255, 0, 0));
-								vertices[i].setColor(ofColor(255, 0, 0));
-							}
-						}
-						else {
-							vertices[i].setWeightColor(ofColor(0, 0, 0));
-							if (vertices[i].getVisited())
-								if (i != current)
-									vertices[i].setColor(ofColor(0, 255, 0));
-								else {
-									vertices[current].setColor(ofColor(128, 0, 128));
-								}
-							else
-								if (i != current)
-									vertices[i].setColor(ofColor(255, 255, 0));
-						}
-						if (i == previous)
-							vertices[i].setColor(ofColor(0, 100, 255));
-					}
-					count++;
-					vertices[start].setColor(ofColor(230, 230, 230));
-				}
-				else 
-					executing = false;
-			}
-		}
-		nextEventSeconds = now + 3;
-	}
+	if (!manual)
+		manualOff();
+	else
+		manualOn();
 }
 
 //--------------------------------------------------------------
@@ -117,8 +34,12 @@ void ofApp::draw(){
 	}
 	for (int x = 0; x < vertices.size(); x++) {
 		vertices[x].draw();
-		if (mode == 3)
+		if (mode == 3) {
 			vertices[x].drawWeight();
+			vertices[x].setDijkstra(true);
+		}
+		else
+			vertices[x].setDijkstra(false);
 	}
 }
 
@@ -153,6 +74,14 @@ void ofApp::keyPressed(int key){
 			createWeightGraphThree();
 		reset();
 		std::cout << pathMode << std::endl;
+	}
+
+	if (key == OF_KEY_LEFT_ALT) {		// test with executing
+		changeManual();
+	}
+
+	if (key == OF_KEY_LEFT_SHIFT) {
+		nextStep();
 	}
 }
 
@@ -348,9 +277,169 @@ void ofApp::changeMode() {
 	}
 }
 
+void ofApp::changeManual() {
+	if (manual)
+		manual = false;
+	else
+		manual = true;
+}
+
+void ofApp::nextStep() {
+	if (manual)
+		if (mode != 3) {
+			if (vertice < visitedToDraw.size() - 1) {
+				vertice++;
+			}
+		}
+		else
+			doDijkstra();
+}
+
+void ofApp::doDijkstra() {
+	if (mode == 3) {
+		if (count < graph.getV()) {
+			vertices[current].setColor(ofColor(128, 0, 128));
+			verticesWeight = vertices;
+			int previous = current;
+			// tu
+			graph.Dijkstra(weightVector, start, graph.getDist(), graph.getSptSet(), vertices, current);
+			vertices[current].setVisited(true);
+
+			for (int i = 0; i < vertices.size(); i++) {
+				if (verticesWeight[i].getWeight() != vertices[i].getWeight()) {
+					if (i != current) {
+						//vertices[i].setWeightColor(ofColor(255, 0, 0));
+						vertices[i].setColor(ofColor(255, 0, 0));
+					}
+				}
+				else {
+					vertices[i].setWeightColor(ofColor(0, 0, 0));
+					if (vertices[i].getVisited())
+						if (i != current)
+							vertices[i].setColor(ofColor(0, 255, 0));
+						else {
+							vertices[current].setColor(ofColor(128, 0, 128));
+						}
+					else
+						if (i != current)
+							vertices[i].setColor(ofColor(255, 255, 0));
+				}
+				if (i == previous)
+					vertices[i].setColor(ofColor(0, 100, 255));
+			}
+			count++; // sss
+			vertices[start].setColor(ofColor(230, 230, 230));
+		}
+		else
+			executing = false;
+	}
+}
+
 void ofApp::clearVectors() {
 	visitedToDraw.clear();
 	pathToDraw.clear();
+}
+
+void ofApp::manualOff() {
+	float now = ofGetElapsedTimef();
+
+	if (now > nextEventSeconds) {
+		if (!executing) {
+			if (mode == 0) {
+				for (int i = 0; i < visitedToDraw.size(); i++)
+					vertices[visitedToDraw[i]].setColor(ofColor(0, 160, 0));
+			}
+			if (mode == 2 || mode == 1) {
+				for (int i = 0; i < pathToDraw.size(); i++)
+					vertices[pathToDraw[i]].setColor(ofColor(0, 160, 0));
+			}
+
+			clearVectors();
+		}
+		else {
+			if (mode == 1 || mode == 0) {
+				vertices[visitedToDraw[vertice]].setColor(ofColor(128, 0, 128));
+
+				if (vertice > 0)
+					vertices[visitedToDraw[vertice - 1]].setColor(ofColor(255, 255, 0));
+
+				if (vertice > 1)
+					vertices[visitedToDraw[vertice - 2]].setColor(ofColor(255, 0, 0));
+
+				if (vertice < visitedToDraw.size() - 1) {
+					vertice++;
+				}
+				else
+					executing = false;
+			}
+
+			if (mode == 2) {
+				vertices[pathToDraw[vertice]].setColor(ofColor(128, 0, 128));
+
+				if (vertice > 0)
+					vertices[pathToDraw[vertice - 1]].setColor(ofColor(255, 255, 0));
+
+				if (vertice > 1)
+					vertices[pathToDraw[vertice - 2]].setColor(ofColor(255, 0, 0));
+
+				if (vertice < pathToDraw.size() - 1) {
+					vertice++;
+				}
+				else
+					executing = false;
+			}
+			doDijkstra();
+		}
+		nextEventSeconds = now + 3;
+	}
+}
+
+void ofApp::manualOn() {
+	if (!executing) {
+		if (mode == 0) {
+			for (int i = 0; i < visitedToDraw.size(); i++)
+				vertices[visitedToDraw[i]].setColor(ofColor(0, 160, 0));
+		}
+		if (mode == 2 || mode == 1) {
+			for (int i = 0; i < pathToDraw.size(); i++)
+				vertices[pathToDraw[i]].setColor(ofColor(0, 160, 0));
+		}
+
+		clearVectors();
+	}
+	else {
+		if (mode == 1 || mode == 0) {
+			vertices[visitedToDraw[vertice]].setColor(ofColor(128, 0, 128));
+
+			if (vertice > 0)
+				vertices[visitedToDraw[vertice - 1]].setColor(ofColor(255, 255, 0));
+
+			if (vertice > 1)
+				vertices[visitedToDraw[vertice - 2]].setColor(ofColor(255, 0, 0));
+
+			if (vertice < visitedToDraw.size() - 1) {
+				
+			}
+			else
+				executing = false;
+		}
+
+		if (mode == 2) {
+			vertices[pathToDraw[vertice]].setColor(ofColor(128, 0, 128));
+
+			if (vertice > 0)
+				vertices[pathToDraw[vertice - 1]].setColor(ofColor(255, 255, 0));
+
+			if (vertice > 1)
+				vertices[pathToDraw[vertice - 2]].setColor(ofColor(255, 0, 0));
+
+			if (vertice < pathToDraw.size() - 1) {
+				
+			}
+			else
+				executing = false;
+		}
+	}
 }
 
 void ofApp::createGraphFour(){

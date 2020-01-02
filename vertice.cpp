@@ -23,7 +23,10 @@ void vertice::draw() {
 	ofSetColor(_color);
 	ofDrawCircle(_x, _y, 20);
 	ofSetColor(ofColor(_stringColor));
-	ofDrawBitmapString(_id, _x - 3, _y + 3);
+	if (!dijkstra)
+		ofDrawBitmapString(_id, _x - 3, _y + 3);
+	else
+		ofDrawBitmapString(_id, _x - 45, _y - 15);
 	ofSetColor(0, 0, 0);
 }
 
@@ -40,11 +43,12 @@ void vertice::drawBFS() {
 void vertice::drawWeight() {
 	if (weightBool) {
 		ofSetColor(_weightColor);
-		ofDrawBitmapString(std::to_string(_weight), _x - 45, _y - 15);
+		// -45, -15
+		ofDrawBitmapString(std::to_string(_weight), _x - 3, _y + 3);
 		ofSetColor(ofColor(0, 0, 0));
 	}
 	else 
-		ofDrawBitmapString(defaultWeight, _x - 45, _y - 15);
+		ofDrawBitmapString(defaultWeight, _x - 3, _y - 3);
 }
 
 
@@ -92,6 +96,14 @@ void vertice::setVisited(bool newStatus) {
 
 bool vertice::getVisited() {
 	return visited;
+}
+
+void vertice::setDijkstra(bool dijkstraState) {
+	dijkstra = dijkstraState;
+}
+
+bool vertice::getDijkstra() {
+	return dijkstra;
 }
 
 std::string vertice::getId() {

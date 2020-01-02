@@ -27,6 +27,7 @@ class ofApp : public ofBaseApp {
 	bool startSelected = false;
 	bool destinationSelected = false;
 	bool pathMode = true;
+	bool manual = false;
 	int mode = 1;
 
 	ofColor red = (255, 0, 0);
@@ -51,8 +52,14 @@ class ofApp : public ofBaseApp {
 		void delay(int number_of_seconds);
 		void reset();
 		void changeMode();
+		void changeManual();
+
+		void nextStep();
+		void doDijkstra();
 
 		void clearVectors();
+		void manualOff();
+		void manualOn();
 
 		void createGraphFour();
 		void createGraphThree();

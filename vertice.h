@@ -12,6 +12,7 @@ class vertice {
 	std::string defaultWeight = "INF";
 	bool weightBool = false;
 	bool visited = false;
+	bool dijkstra = false;
 	ofColor _color;
 	ofColor _stringColor = ofColor(0, 0, 0);
 	ofColor _weightColor = ofColor(0, 0, 0);
@@ -50,6 +51,10 @@ public:
 	void setVisited(bool newStatus);
 
 	bool getVisited();
+
+	void setDijkstra(bool dijkstraState);
+
+	bool getDijkstra();
 
 	std::string getId();
 
