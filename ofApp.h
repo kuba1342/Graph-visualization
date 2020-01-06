@@ -3,10 +3,12 @@
 #include "ofMain.h"
 #include "vertice.h"
 #include "graph.h"
+#include "UI.h"
 #include <time.h>
 
 class ofApp : public ofBaseApp {
 
+	UI ui;
 	graph graph;
 	vector<vector<int>> G2;
 	vector<vector<int>> weightVector;

@@ -6,6 +6,8 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+	ui.setup(mode);
+
 	vertice = 0;
 
 	graph.setup(9, 12);
@@ -17,6 +19,9 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+	ui.checkMode(mode);
+	ui.checkManual(manual);
+
 	if (!manual)
 		manualOff();
 	else
@@ -25,6 +30,8 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+	ui.draw();
+
 	for (int i = 0; i < vertices.size(); i++) {
 		for (int j = 0; j < G2[i].size(); j++) {
 			ofDrawLine(vertices[i].getX(), vertices[i].getY(), vertices[G2[i][j]].getX(), vertices[G2[i][j]].getY());
