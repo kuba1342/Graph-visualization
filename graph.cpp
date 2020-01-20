@@ -106,7 +106,6 @@ void graph::BFSPath(std::vector<std::vector<int>> G, int s, int dest, int v, std
 	int crawl = dest;
 	path.push_back(crawl);
 	while (pred[crawl] != -1) {
-		//std::cout << pred[crawl] << " ";
 		path.push_back(pred[crawl]);
 		crawl = pred[crawl];
 	}
@@ -162,10 +161,6 @@ void graph::Dijkstra(std::vector<std::vector<int>> weightVector, int s, int dist
 			dist[v] = dist[u] + weightVector[u][v];
 			vertices[v].setWeight(dist[v]);
 		}
-
-	//for (int i = 0; i < _V; i++)
-		//std::cout << i << " " << dist[i] << std::endl;
-
 }
 
 void graph::prepareDijkstra() {
