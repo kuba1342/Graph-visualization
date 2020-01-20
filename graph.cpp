@@ -149,7 +149,8 @@ int graph::minDistance(int dist[], bool sptSet[], int V) {
 	return min_index;
 }
 
-void graph::Dijkstra(std::vector<std::vector<int>> weightVector, int s, int dist[], bool sptSet[], std::vector<vertice> &vertices, int &current) {
+void graph::Dijkstra(std::vector<std::vector<int>> weightVector, int s, int dist[], bool sptSet[], std::vector<vertice> &vertices, 
+		     int &current) {
 	dist[s] = 0;
 	vertices[s].setWeight(dist[s]);
 	int u = minDistance(dist, sptSet, _V);
