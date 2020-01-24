@@ -47,7 +47,6 @@ void graph::BFS(int s, std::vector<std::vector<int>> G, int v, std::vector<int> 
 
 	q.push(s);
 	visited[s] = true;
-
 	
 	while (!q.empty()) {
 		int f = q.front();
