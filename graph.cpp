@@ -63,7 +63,9 @@ void graph::BFS(int s, std::vector<std::vector<int>> G, int v, std::vector<int> 
 	}
 }
 
-bool graph::BFS2(std::vector<std::vector<int>> G, int s, int dest, int v, int pred[], int dist[], std::vector<int> &visitedToDraw) {
+bool graph::BFS2(std::vector<std::vector<int>> G, int s, int dest, int v, int pred[], 
+		 int dist[], std::vector<int> &visitedToDraw) {
+	
 	std::list<int> queue;
 	bool* visited = new bool[v];
 
@@ -95,7 +97,9 @@ bool graph::BFS2(std::vector<std::vector<int>> G, int s, int dest, int v, int pr
 	}
 }
 
-void graph::BFSPath(std::vector<std::vector<int>> G, int s, int dest, int v, std::vector<int> &visitedToDraw, std::vector<int> &pathToDraw) {
+void graph::BFSPath(std::vector<std::vector<int>> G, int s, int dest, int v, 
+		    std::vector<int> &visitedToDraw, std::vector<int> &pathToDraw) {
+	
 	int* pred = new int[v];
 	int* dist = new int[v];
 
