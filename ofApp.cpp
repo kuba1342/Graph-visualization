@@ -130,10 +130,10 @@ void ofApp::mousePressed(int x, int y, int button){
 						}
 
 						if (mode == 3) {
-							graph.BFS(start, G2, graph.getV(), visitedToDraw);
-							graph.prepareDijkstra();
-							count = 0;
-							current = start;
+							//graph.BFS(start, G2, graph.getV(), visitedToDraw);
+							//graph.prepareDijkstra();
+							//count = 0;
+							//current = start;
 						}
 					}
 					else {
@@ -142,7 +142,14 @@ void ofApp::mousePressed(int x, int y, int button){
 							std::cout << "Destination: " << destination << std::endl;
 							vertices[i].setColor(ofColor(0, 0, 255));
 							destinationSelected = true;
-							graph.BFSPath(G2, start, destination, graph.getV(), visitedToDraw, pathToDraw);
+							if (mode == 1)
+								graph.BFSPath(G2, start, destination, graph.getV(), visitedToDraw, pathToDraw);
+							if (mode == 3) {
+							//	graph.BFS(start, G2, graph.getV(), visitedToDraw);
+								graph.prepareDijkstra();
+								count = 0;
+								current = start;
+							}
 						}
 					}
 					if (destinationSelected || (!pathMode && startSelected))
@@ -224,7 +231,7 @@ void ofApp::reset() {
 		}
 
 		if (mode == 3) {
-			pathMode = false;
+			pathMode = true;
 			for (int i = 0; i < vertices.size(); i++) {
 				vertices[i].setColor(ofColor(255, 255, 0));
 				vertices[i].setStringColor(ofColor(0, 0, 0));
@@ -308,16 +315,13 @@ void ofApp::doDijkstra() {
 			vertices[current].setColor(ofColor(128, 0, 128));
 			verticesWeight = vertices;
 			int previous = current;
-			// tu
 			graph.Dijkstra(weightVector, start, graph.getDist(), graph.getSptSet(), vertices, current);
 			vertices[current].setVisited(true);
 
 			for (int i = 0; i < vertices.size(); i++) {
 				if (verticesWeight[i].getWeight() != vertices[i].getWeight()) {
-					if (i != current) {
-						//vertices[i].setWeightColor(ofColor(255, 0, 0));
+					if (i != current) 
 						vertices[i].setColor(ofColor(255, 0, 0));
-					}
 				}
 				else {
 					vertices[i].setWeightColor(ofColor(0, 0, 0));
@@ -334,11 +338,18 @@ void ofApp::doDijkstra() {
 				if (i == previous)
 					vertices[i].setColor(ofColor(0, 100, 255));
 			}
-			count++; // sss
+			count++; 
 			vertices[start].setColor(ofColor(230, 230, 230));
 		}
-		else
+		else {
 			executing = false;
+
+			if (mode == 3) {
+				graph.printDijkstraPath(graph.getParent(), destination);
+				for (int i = 0; i < graph.dijkstraPath.size(); i++) 
+					vertices[graph.dijkstraPath[i]].setColor(ofColor(230, 230, 230));
+			}
+		}
 	}
 }
 

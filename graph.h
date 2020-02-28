@@ -12,12 +12,14 @@ class graph {
 	int _E;
 
 	int* dist;
+	int* parent;
 	bool* sptSet;
 
 	float nextEventSeconds = 0;
 
 public:	
 	std::vector<bool> visited;
+	std::vector<int> dijkstraPath;
 
 	graph();
 
@@ -47,6 +49,8 @@ public:
 
 	void prepareDijkstra();
 
+	void printDijkstraPath(int parent[], int j);
+
 	int getV();
 
 	void setV(int newV);
@@ -54,6 +58,10 @@ public:
 	int* getDist();
 
 	void setDist(int newDist[]);
+
+	int* getParent();
+
+	void setParent(int newParent[]);
 
 	bool* getSptSet();
 

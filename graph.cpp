@@ -8,6 +8,7 @@ graph::graph()
 void graph::setup(int V) {
 	_V = V;
 	dist = new int[_V];
+	parent = new int[_V];
 	sptSet = new bool[_V];
 }
 
@@ -154,6 +155,7 @@ int graph::minDistance(int dist[], bool sptSet[], int V) {
 
 void graph::Dijkstra(std::vector<std::vector<int>> weightVector, int s, int dist[], 
 		     bool sptSet[], std::vector<vertice> &vertices, int &current) {
+
 	dist[s] = 0;
 	vertices[s].setWeight(dist[s]);
 	int u = minDistance(dist, sptSet, _V);
@@ -163,13 +165,27 @@ void graph::Dijkstra(std::vector<std::vector<int>> weightVector, int s, int dist
 		if (!sptSet[v] && weightVector[u][v] && dist[u] != INT_MAX
 			&& dist[u] + weightVector[u][v] < dist[v]) {
 			dist[v] = dist[u] + weightVector[u][v];
+			parent[v] = u;
 			vertices[v].setWeight(dist[v]);
 		}
 }
 
 void graph::prepareDijkstra() {
-	for (int i = 0; i < _V; i++)
-		dist[i] = INT_MAX, sptSet[i] = false;
+	parent = new int[_V];
+	for (int i = 0; i < _V; i++) 
+		dist[i] = INT_MAX, sptSet[i] = false, parent[i] = -1;
+
+	dijkstraPath.assign(_V, 0);
+	dijkstraPath.clear();
+}
+
+void graph::printDijkstraPath(int parent[], int j) {
+	if (parent[j] == -1)
+		return;
+
+	std::cout << parent[j] << " ";
+	printDijkstraPath(parent, parent[j]);
+	dijkstraPath.push_back(j);
 }
 
 int graph::getV() {
@@ -186,6 +202,14 @@ int * graph::getDist() {
 
 void graph::setDist(int newDist[]) {
 	dist = newDist;
+}
+
+int * graph::getParent() {
+	return parent;
+}
+
+void graph::setParent(int newParent[]) {
+	parent = newParent;
 }
 
 bool * graph::getSptSet() {
